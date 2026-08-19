@@ -19,6 +19,18 @@ class PhysicsEngine:
         is_conductive = current_temp_c >= self.tc_vo2 or applied_voltage > 5.0
         return "CONDUCTIVE_METAL" if is_conductive else "INSULATOR"
 
+    def calculate_resistance(self, dvr: float, state: str) -> float:
+        """
+        Calculate the theoretical electrical resistance of a droplet based on its
+        DVR and its current VO2 phase state.
+        """
+        if state == "CONDUCTIVE_METAL":
+            # Metallic phase: resistance is inversely proportional to spread (DVR)
+            return 10.0 / dvr
+        else:
+            # Insulator phase: high base resistance mediated by DVR
+            return 100000.0 * dvr
+
     def calculate_droplet_spread(self, volume: float, impact_velocity: float) -> float:
         """
         Estimate the radius of the droplet spread upon impact with the substrate,
